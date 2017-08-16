@@ -242,6 +242,38 @@ int main() {
 
             int prev_size = previous_path_x.size();
 
+            // TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
+
+            if (prev_size > 0) {
+              car_s = end_path_s;
+            }
+
+            bool too_close = false;
+
+            // find ref_v to use
+            for (int i = 0; i < sensor_fusion.size(); i++) {
+              // car is in my lane
+              float d = sensor_fusion[i][6];
+              if (d < (2 + 4 * lane + 2) && d > (2 + 4 * lane - 2)) {
+                double vx = sensor_fusion[i][3];
+                double vy = sensor_fusion[i][4];
+                double check_speed = sqrt(vx*vx + vy*vy);
+                double check_car_s = sensor_fusion[i][5];
+
+                // calculate where checked car will be in the future
+                check_car_s += ((double) prev_size * 0.02 * check_speed);  
+                // check if car if in front of us, and closer than 30 meters
+                if ((check_car_s > car_s) && (check_car_s - car_s) < 30) {
+
+                  // lower reference velocity so we dont crash into the car in front of us
+                  // or flag to try to change lanes
+                  ref_vel = 29.5; // mph 
+                  // too_close = true;
+
+                }
+              }
+            }
+
             // Create a list of widely spaced (x,y) waypoints, evenly spaced at 30m
             // Later we will iterplate these waypoints with a spline and fill it in with more points that control spedd.
 
@@ -355,8 +387,6 @@ int main() {
             }
 
           	json msgJson;
-
-            // TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
 
             msgJson["next_x"] = next_x_vals;
           	msgJson["next_y"] = next_y_vals;
