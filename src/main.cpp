@@ -267,11 +267,17 @@ int main() {
 
                   // lower reference velocity so we dont crash into the car in front of us
                   // or flag to try to change lanes
-                  ref_vel = 29.5; // mph 
-                  // too_close = true;
+                  // ref_vel = 29.5; // mph 
+                  too_close = true;
 
                 }
               }
+            }
+
+            if (too_close) {
+              ref_vel -= 0.224;
+            } else if (ref_vel < 49.5) {
+              ref_vel += 0.224;
             }
 
             // Create a list of widely spaced (x,y) waypoints, evenly spaced at 30m
