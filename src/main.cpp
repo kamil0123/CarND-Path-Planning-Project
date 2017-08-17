@@ -270,7 +270,9 @@ int main() {
                   // ref_vel = 29.5; // mph 
                   too_close = true;
 				  
-				  if (lane > 0) {
+				  if (lane == 0) {
+					  lane = 1;
+				  } else if (lane > 0) {
 					  lane = 0;
 				  } 
 
