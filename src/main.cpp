@@ -249,6 +249,7 @@ int main() {
             }
 
             bool too_close = false;
+            double too_close_speed = 0;
 
             // find ref_v to use
             for (int i = 0; i < sensor_fusion.size(); i++) {
@@ -269,18 +270,18 @@ int main() {
                   // or flag to try to change lanes
                   // ref_vel = 29.5; // mph 
                   too_close = true;
-				  
-				  if (lane == 0) {
-					  lane = 1;
-				  } else if (lane > 0) {
-					  lane = 0;
-				  } 
+                  too_close_speed = check_speed;
 
+                  if (lane == 0) {
+                    lane = 1;
+                  } else if (lane > 0) {
+                    lane = 0;
+                  } 
                 }
               }
             }
 
-            if (too_close) {
+            if (too_close && car_speed > too_close_speed) {
               ref_vel -= 0.224;
             } else if (ref_vel < 49.5) {
               ref_vel += 0.224;
