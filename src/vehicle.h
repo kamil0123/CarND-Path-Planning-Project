@@ -17,11 +17,10 @@ class Vehicle {
     Vehicle(const int i);
 	
 	void updateParameters(const double s, const double d, const double v);
-	void update_lines();
+	void updateSideLanes();
 
 	Lane calculateLane(const double d);
-	void specifySideLanes();
-
+	Lane calculateLane();
 };
 
 #endif /* VEHICLE */
