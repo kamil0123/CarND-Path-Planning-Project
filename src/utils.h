@@ -10,7 +10,7 @@ enum class Lane {
 };
 
 enum class BehaviorType {
-	KEEP_LANE, TURN_RIGHT, TURN_LEFT
+	KEEP_LANE, LANE_CHANGE_RIGHT, LANE_CHANGE_LEFT
 }
 
 
