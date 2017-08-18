@@ -43,11 +43,10 @@ void Vehicle::updateSideLanes() {
 	} else if (this->lane == Lane::RIGHT) {
 		this->laneOnLeft  = Lane::CENTER;
 		this->laneOnRight = Lane::NONE;
-		
+	
 	} else {
 		this->lane        = Lane::UNKOWN;
 		this->laneOnLeft  = Lane::UNKOWN;
 		this->laneOnRight = Lane::UNKOWN;
-
 	}
 }
