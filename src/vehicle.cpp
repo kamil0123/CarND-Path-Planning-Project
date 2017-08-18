@@ -20,7 +20,7 @@ Lane Vehicle::calculateLane(const double d) {
 	} else if (d > 4.0 && d <= 8.0) {
 		lane = Lane::CENTER;
 	} else if (d > 8.0 && d <= 12.0) {
-		lane = Lane:RIGHT;
+		lane = Lane::RIGHT;
 	}
 	
 	return lane;

@@ -243,13 +243,37 @@ int main() {
             int prev_size = previous_path_x.size();
 
             // TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
-
-            if (prev_size > 0) {
+			
+			if (prev_size > 0) {
               car_s = end_path_s;
             }
+			
+			// My car
+			Vehicle car(999);
+			car.updateParameters(car_s, car_d, car_speed);
+			car.updateSideLanes();
 
             bool too_close = false;
             double too_close_speed = 0;
+			
+			vector<Vehicle> vehicles;
+			
+			for (int i =0; i < sensor_fusion.size(); i++) {
+				
+				int id    = sensor_fusion[i][0];
+				double vx = sensor_fusion[i][3];
+                double vy = sensor_fusion[i][4];
+				double s  = sensor_fusion[i][5];
+				double d  = sensor_fusion[i][6];
+				
+				double speed = sqrt(vx*vx + vy*vy);
+				
+				Vehicle vehicle(id);
+				vehicle.updateParameters(s, d, speed);
+				vehicle.updateSideLanes();
+				
+				vehicles.push_back(vehicle);
+			}
 
             // find ref_v to use
             for (int i = 0; i < sensor_fusion.size(); i++) {
