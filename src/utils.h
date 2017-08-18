@@ -1,5 +1,5 @@
-#ifndef VEHICLE
-#define VEHICLE
+#ifndef UTILS
+#define UTILS
 
 #include <vector>
 
@@ -14,4 +14,4 @@ enum class BehaviorType {
 }
 
 
-#endif /* VEHICLE */
+#endif /* UTILS */
