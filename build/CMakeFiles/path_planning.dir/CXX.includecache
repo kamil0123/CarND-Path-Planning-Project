@@ -772,6 +772,10 @@ lapacke_mangling.h
 
 /home/kamil/CarND/CarND-Path-Planning-Project/src/Eigen-3.3/Eigen/src/plugins/MatrixCwiseUnaryOps.h
 
+/home/kamil/CarND/CarND-Path-Planning-Project/src/behaviorPlanner.h
+vector
+-
+
 /home/kamil/CarND/CarND-Path-Planning-Project/src/json.hpp
 algorithm
 -
@@ -851,6 +855,12 @@ json.hpp
 /home/kamil/CarND/CarND-Path-Planning-Project/src/json.hpp
 spline.h
 /home/kamil/CarND/CarND-Path-Planning-Project/src/spline.h
+utils.h
+/home/kamil/CarND/CarND-Path-Planning-Project/src/utils.h
+vehicle.h
+/home/kamil/CarND/CarND-Path-Planning-Project/src/vehicle.h
+behaviorPlanner.h
+/home/kamil/CarND/CarND-Path-Planning-Project/src/behaviorPlanner.h
 
 /home/kamil/CarND/CarND-Path-Planning-Project/src/spline.h
 cstdio
@@ -861,4 +871,10 @@ vector
 -
 algorithm
 -
+
+/home/kamil/CarND/CarND-Path-Planning-Project/src/utils.h
+vector
+-
+
+/home/kamil/CarND/CarND-Path-Planning-Project/src/vehicle.h
 

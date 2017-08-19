@@ -8,7 +8,13 @@
 #include "Eigen-3.3/Eigen/Core"
 #include "Eigen-3.3/Eigen/QR"
 #include "json.hpp"
+
 #include "spline.h"
+
+#include "utils.h"
+#include "vehicle.h"
+#include "behaviorPlanner.h"
+
 
 using namespace std;
 

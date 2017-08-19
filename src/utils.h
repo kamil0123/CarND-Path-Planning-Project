@@ -11,7 +11,7 @@ enum class Lane {
 
 enum class BehaviorType {
 	KEEP_LANE, LANE_CHANGE_RIGHT, LANE_CHANGE_LEFT
-}
+};
 
 
 #endif /* UTILS */
