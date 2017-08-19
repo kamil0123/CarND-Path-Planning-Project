@@ -15,7 +15,6 @@
 #include "vehicle.h"
 #include "behaviorPlanner.h"
 
-
 using namespace std;
 
 // for convenience
@@ -205,12 +204,12 @@ int main() {
 
   // start in lane 1
   int lane = 1;
-
-  // reference velocity to targer
+  
+   // reference velocity to targer
   double ref_vel = 0; // mph - miles per hour
 
-  h.onMessage([&ref_vel, &map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy, &lane](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
-                     uWS::OpCode opCode) {
+  h.onMessage([&lane, &ref_vel, &map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy]
+    (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -250,36 +249,37 @@ int main() {
 
             // TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
 			
-			if (prev_size > 0) {
+			      if (prev_size > 0) {
               car_s = end_path_s;
             }
-			
-			// My car
-			Vehicle car(999);
-			car.updateParameters(car_s, car_d, car_speed);
-			car.updateSideLanes();
 
             bool too_close = false;
             double too_close_speed = 0;
-			
-			vector<Vehicle> vehicles;
-			
-			for (int i =0; i < sensor_fusion.size(); i++) {
-				
-				int id    = sensor_fusion[i][0];
-				double vx = sensor_fusion[i][3];
-                double vy = sensor_fusion[i][4];
-				double s  = sensor_fusion[i][5];
-				double d  = sensor_fusion[i][6];
-				
-				double speed = sqrt(vx*vx + vy*vy);
-				
-				Vehicle vehicle(id);
-				vehicle.updateParameters(s, d, speed);
-				vehicle.updateSideLanes();
-				
-				vehicles.push_back(vehicle);
-			}
+
+            // My car
+            Vehicle car(999);
+            car.updateParameters(car_s, car_d, car_speed);
+            car.updateSideLanes();
+
+            vector<Vehicle> vehicles;
+      
+            for (int i =0; i < sensor_fusion.size(); i++) {
+              
+              int id    = sensor_fusion[i][0];
+              double vx = sensor_fusion[i][3];
+              double vy = sensor_fusion[i][4];
+              double s  = sensor_fusion[i][5];
+              double d  = sensor_fusion[i][6];
+              
+              double speed = sqrt(vx*vx + vy*vy);
+              
+              Vehicle vehicle(id);
+              vehicle.updateParameters(s, d, speed);
+              vehicle.updateSideLanes();
+              
+              vehicles.push_back(vehicle);
+            }
+
 
             // find ref_v to use
             for (int i = 0; i < sensor_fusion.size(); i++) {

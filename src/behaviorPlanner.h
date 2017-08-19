@@ -2,6 +2,8 @@
 #define BEHAVIORPLANNER
 
 #include <vector>
+#include "helper.h"
+#include "vehicle.h"
 
 class BehaviorPlanner {
 

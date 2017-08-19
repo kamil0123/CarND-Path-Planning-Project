@@ -1,5 +1,10 @@
-#ifndef VEHICLE
-#define VEHICLE
+#ifndef VEHICLE_H_
+#define VEHICLE_H_
+
+#include <iostream>
+#include <vector>
+#include <math.h>
+#include "utils.h"
 
 class Vehicle {
 
@@ -23,4 +28,4 @@ class Vehicle {
 	Lane calculateLane();
 };
 
-#endif /* VEHICLE */
+#endif /* VEHICLE_H_ */
