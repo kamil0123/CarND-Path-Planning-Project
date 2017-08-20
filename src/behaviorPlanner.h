@@ -10,7 +10,7 @@ class BehaviorPlanner {
   public:
     BehaviorPlanner();
     
-	BehaviorType update(Vehicle& car, std::vector<Vehicle>& otherVehicles);
+	BehaviorType updateState(Vehicle& car, std::vector<Vehicle>& otherVehicles);
 };
 
 #endif /* BEHAVIORPLANNER */
