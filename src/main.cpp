@@ -281,7 +281,7 @@ int main() {
             }
 
             BehaviorPlanner behaviorPlanner;
-            BehaviorType behavior = behaviorPlanner.updateState(myCar, otherCars);
+            BehaviorType behavior = behaviorPlanner.updateState(car, vehicles);
 
 
             // find ref_v to use

@@ -10,8 +10,8 @@ void State::update(const Vehicle &car, const std::vector<Vehicle>& otherVehicles
 
     onRoad = true;
 
-	  this->front_distante = 1000;
-	  this->back_distance  = 1000;
+	  this->front_distance = 1000;
+	  this-> back_distance = 1000;
 	
 	  for (auto &observedVehicle : otherVehicles) {
 
@@ -20,7 +20,7 @@ void State::update(const Vehicle &car, const std::vector<Vehicle>& otherVehicles
       if (distance > 0.0) {
         // observed car is over our car 
         if (observedVehicle.lane == lane && distance < this->back_distance) {
-          this->back_distante = distance;
+          this->back_distance = distance;
           this->back_s = observedVehicle.s;
           this->back_v = observedVehicle.v;
         } 
@@ -29,7 +29,7 @@ void State::update(const Vehicle &car, const std::vector<Vehicle>& otherVehicles
         // observed car is in front of our car 
         distance = distance * (-1.0);
         if (observedVehicle.lane == lane && distance < this->front_distance) {
-          this->front_distante = distance;
+          this->front_distance = distance;
           this->front_s = observedVehicle.s;
           this->front_v = observedVehicle.v;
         } 
