@@ -1,5 +1,5 @@
-#ifndef UTILS
-#define UTILS
+#ifndef UTILS_H_
+#define UTILS_H_
 
 #include <vector>
 
@@ -9,9 +9,13 @@ enum class Lane {
   LEFT, CENTER, RIGHT, NONE, UNKOWN
 };
 
-// enum class BehaviorType {
-// 	KEEP_LANE, LANE_CHANGE_RIGHT, LANE_CHANGE_LEFT
-// };
+enum class BehaviorType {
+	KEEP_LANE, LANE_CHANGE_RIGHT, LANE_CHANGE_LEFT
+};
+
+enum class Direction {
+	FRONT, BACK
+};
 
 
-#endif /* UTILS */
+#endif /* UTILS_H_ */
