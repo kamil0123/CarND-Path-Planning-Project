@@ -10,16 +10,18 @@ class State {
 
   public:
     
-	double front_delta_s;
+    bool onRoad;
+
+	double front_distance;
 	double front_s;
 	double front_v;
 
-	double back_delta_s;
+	double back_distance;
 	double back_s;
 	double back_v;
 
 	State();
-	void update(const Vehicle &car, const std::vector<Vehicle>& otherVehicles, const Lane lane, const int direction);
+	void update(const Vehicle &car, const std::vector<Vehicle>& otherVehicles, const Lane lane);
 };
 
 #endif /* STATE_H_ */

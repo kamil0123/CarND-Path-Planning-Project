@@ -280,6 +280,9 @@ int main() {
               vehicles.push_back(vehicle);
             }
 
+            BehaviorPlanner behaviorPlanner;
+            BehaviorType behavior = behaviorPlanner.updateState(myCar, otherCars);
+
 
             // find ref_v to use
             for (int i = 0; i < sensor_fusion.size(); i++) {
