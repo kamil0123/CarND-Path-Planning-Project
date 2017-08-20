@@ -12,6 +12,7 @@
 #include "spline.h"
 
 #include "utils.h"
+#include "behavior.h"
 #include "vehicle.h"
 #include "behaviorPlanner.h"
 
@@ -281,8 +282,7 @@ int main() {
             }
 
             BehaviorPlanner behaviorPlanner;
-            BehaviorType behavior = behaviorPlanner.updateState(car, vehicles);
-
+            Behavior behavior = behaviorPlanner.updateState(car, vehicles);
 
             // find ref_v to use
             for (int i = 0; i < sensor_fusion.size(); i++) {

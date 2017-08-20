@@ -9,8 +9,12 @@ enum class Lane {
   LEFT, CENTER, RIGHT, NONE, UNKOWN
 };
 
-enum class BehaviorType {
+enum class BehaviorLaneType {
 	KEEP_LANE, LANE_CHANGE_RIGHT, LANE_CHANGE_LEFT
+};
+
+enum class BehaviorAccType {
+  NONE, UP, DOWN
 };
 
 enum class Direction {
