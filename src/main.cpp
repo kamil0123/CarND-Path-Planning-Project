@@ -273,6 +273,9 @@ int main() {
               double d  = sensor_fusion[i][6];
               
               double speed = sqrt(vx*vx + vy*vy);
+
+              // calculate where checked car will be in the future
+              s += ((double) prev_size * 0.02 * speed);
               
               Vehicle vehicle(id);
               vehicle.updateParameters(s, d, speed);
@@ -283,6 +286,8 @@ int main() {
 
             BehaviorPlanner behaviorPlanner;
             Behavior behavior = behaviorPlanner.updateState(car, vehicles);
+
+            // TODO finish behaviorPlanner.updateState
 
             // find ref_v to use
             for (int i = 0; i < sensor_fusion.size(); i++) {
