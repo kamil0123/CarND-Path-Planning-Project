@@ -2,6 +2,8 @@
 #define BEHAVIORPLANNER
 
 #include <vector>
+#include <iostream>
+
 #include "behavior.h"
 #include "vehicle.h"
 #include "state.h"

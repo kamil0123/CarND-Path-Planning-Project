@@ -21,7 +21,7 @@ Behavior BehaviorPlanner::updateState(Vehicle& car, std::vector<Vehicle>& otherV
   // check there is a car in front of us and closer than 30 meters
   if (currentLaneState.front_distance < 30) {
     too_close = true;
-    too_close_speed = currentLaneState.front_s;
+    too_close_speed = currentLaneState.front_v;
     
     if (car.lane == Lane::CENTER) {
       behavior.laneType = BehaviorLaneType::LANE_CHANGE_LEFT;
@@ -33,10 +33,10 @@ Behavior BehaviorPlanner::updateState(Vehicle& car, std::vector<Vehicle>& otherV
   } else {
     behavior.laneType = BehaviorLaneType::KEEP_LANE;
   }
-  
-  if (too_close && car.s > too_close_speed) {
+
+  if (too_close && car.v > too_close_speed) {
     behavior.accType = BehaviorAccType::DOWN;
-  } else if (car.s < 49.5) {
+  } else if (car.v < 49.5) {
     behavior.accType = BehaviorAccType::UP;
   } else {
     behavior.accType = BehaviorAccType::NONE;

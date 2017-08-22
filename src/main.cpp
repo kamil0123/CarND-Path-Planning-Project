@@ -207,7 +207,7 @@ int main() {
   int lane = 1;
   
    // reference velocity to targer
-  double ref_vel = 0; // mph - miles per hour
+  double ref_vel = 10; // mph - miles per hour
 
   h.onMessage([&lane, &ref_vel, &map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy]
     (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -265,7 +265,7 @@ int main() {
             vector<Vehicle> vehicles;
       
             for (int i =0; i < sensor_fusion.size(); i++) {
-              
+
               int id    = sensor_fusion[i][0];
               double vx = sensor_fusion[i][3];
               double vy = sensor_fusion[i][4];
@@ -287,43 +287,51 @@ int main() {
             BehaviorPlanner behaviorPlanner;
             Behavior behavior = behaviorPlanner.updateState(car, vehicles);
 
+            if (behavior.accType == BehaviorAccType::DOWN) {
+              ref_vel -= 0.224;
+            } else if (behavior.accType == BehaviorAccType::UP) {
+              ref_vel += 0.224;
+            }
+            cout << "ref_vel: " << ref_vel << " ";
+
+
             // TODO finish behaviorPlanner.updateState
 
             // find ref_v to use
-            for (int i = 0; i < sensor_fusion.size(); i++) {
-              // car is in my lane
-              float d = sensor_fusion[i][6];
-              if (d < (2 + 4 * lane + 2) && d > (2 + 4 * lane - 2)) {
-                double vx = sensor_fusion[i][3];
-                double vy = sensor_fusion[i][4];
-                double check_speed = sqrt(vx*vx + vy*vy);
-                double check_car_s = sensor_fusion[i][5];
+            // for (int i = 0; i < sensor_fusion.size(); i++) {
+            //   // car is in my lane
+            //   float d = sensor_fusion[i][6];
+            //   if (d < (2 + 4 * lane + 2) && d > (2 + 4 * lane - 2)) {
+            //     double vx = sensor_fusion[i][3];
+            //     double vy = sensor_fusion[i][4];
+            //     double check_speed = sqrt(vx*vx + vy*vy);
+            //     double check_car_s = sensor_fusion[i][5];
 
-                // calculate where checked car will be in the future
-                check_car_s += ((double) prev_size * 0.02 * check_speed);  
-                // check if car if in front of us, and closer than 30 meters
-                if ((check_car_s > car_s) && (check_car_s - car_s) < 30) {
+            //     // calculate where checked car will be in the future
+            //     check_car_s += ((double) prev_size * 0.02 * check_speed);  
+            //     // check if car if in front of us, and closer than 30 meters
+            //     if ((check_car_s > car_s) && (check_car_s - car_s) < 30) {
 
-                  // lower reference velocity so we dont crash into the car in front of us
-                  // or flag to try to change lanes
-                  // ref_vel = 29.5; // mph 
-                  too_close = true;
-                  too_close_speed = check_speed;
+            //       // lower reference velocity so we dont crash into the car in front of us
+            //       // or flag to try to change lanes
+            //       // ref_vel = 29.5; // mph 
+            //       too_close = true;
+            //       too_close_speed = check_speed;
 
-                  if (lane == 0) {
-                    lane = 1;
-                  } else if (lane > 0) {
-                    lane = 0;
-                  } 
-                }
-              }
-            }
+            //       if (lane == 0) {
+            //         lane = 1;
+            //       } else if (lane > 0) {
+            //         lane = 0;
+            //       } 
+            //     }
+            //   }
+            // }
 
-            if (too_close && car_speed > too_close_speed) {
-              ref_vel -= 0.224;
-            } else if (ref_vel < 49.5) {
-              ref_vel += 0.224;
-            }
+            // if (too_close && car_speed > too_close_speed) {
+            //   ref_vel -= 0.224;
+            // } else if (ref_vel < 49.5) {
+            //   ref_vel += 0.224;
+            // }
 
             // Create a list of widely spaced (x,y) waypoints, evenly spaced at 30m
             // Later we will iterplate these waypoints with a spline and fill it in with more points that control spedd.
@@ -436,6 +444,9 @@ int main() {
               next_y_vals.push_back(y_point);
                
             }
+
+            // vector<double> next_x_vals;
+            // vector<double> next_y_vals;
 
           	json msgJson;
 
