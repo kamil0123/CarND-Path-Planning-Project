@@ -4,9 +4,12 @@ Vehicle::Vehicle(const int i){
   this->id = i;
 }
 
-void Vehicle::updateParameters(const double s, const double d, const double v) {
+void Vehicle::updateParameters(const double s, const double d, const double x, const double y, const double yaw, const double v) {
 	this->s = s;
 	this->d = d;
+  this->x = x;
+  this->y = y;
+  this->yaw = yaw;
 	this->v = v;
 	this->lane = this->calculateLane(this->d);
 }
