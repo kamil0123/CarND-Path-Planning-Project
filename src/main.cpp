@@ -269,7 +269,7 @@ int main() {
               double speed = sqrt(vx*vx + vy*vy);
 
               // calculate where checked car will be in the future
-              s += ((double) prev_size * 0.02 * speed);
+              s += ((double) prev_size * DELTA_TIME * speed);
               
               Vehicle vehicle(id);
               vehicle.updateParameters(s, d, speed);
@@ -281,13 +281,6 @@ int main() {
             BehaviorPlanner behaviorPlanner;
             Behavior behavior = behaviorPlanner.updateState(car, vehicles);
 
-            if (behavior.accType == BehaviorAccType::DOWN) {
-              ref_vel -= 0.224;
-            } else if (behavior.accType == BehaviorAccType::UP) {
-              ref_vel += 0.224;
-            }
-            // cout << "ref_vel: " << ref_vel << " ";
-            
             TrajectoryGenerator trajectoryGenerator;
             trajectoryGenerator.updateTrajectory(car, behavior);
 

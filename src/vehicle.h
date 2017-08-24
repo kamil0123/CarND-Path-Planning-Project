@@ -25,6 +25,7 @@ class Vehicle {
   Vehicle(const int i);
 	
 	void updateParameters(const double s, const double d, const double x, const double y, const double yaw, const double v);
+  void updateParameters(const double s, const double d, const double v);
 	void updateSideLanes();
 
 	Lane calculateLane(const double d);
