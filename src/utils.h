@@ -5,6 +5,10 @@
 
 const double DELTA_TIME = 0.02;
 
+// reference velocity to targer
+// mph - miles per hour
+extern double ref_vel = 0.0; 
+
 enum class Lane {
   LEFT, CENTER, RIGHT, NONE, UNKOWN
 };

@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 
+#include "utils.h"
 #include "behavior.h"
 #include "vehicle.h"
 #include "state.h"
