@@ -299,6 +299,9 @@ int main() {
             } else if (lane == 1 && behavior.laneType == BehaviorLaneType::LANE_CHANGE_LEFT) {
               lane = 0;
             } 
+            
+            TrajectoryGenerator trajectoryGenerator;
+            trajectoryGenerator.updateTrajectory(car, behavior);
 
             // Create a list of widely spaced (x,y) waypoints, evenly spaced at 30m
             // Later we will iterplate these waypoints with a spline and fill it in with more points that control spedd.
