@@ -7,32 +7,55 @@ constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
 double rad2deg(double x) { return x * 180 / pi(); }
 
-TrajectoryGenerator updateTrajectory(Vehicle& car, Behavior& behavior) {
+// Transform from Frenet s,d coordinates to Cartesian x,y
+vector<double> getXY(double s, double d, vector<double> maps_s, vector<double> maps_x, vector<double> maps_y)
+{
+  int prev_wp = -1;
+
+  while(s > maps_s[prev_wp+1] && (prev_wp < (int)(maps_s.size()-1) ))
+  {
+    prev_wp++;
+  }
+
+  int wp2 = (prev_wp+1)%maps_x.size();
+
+  double heading = atan2((maps_y[wp2]-maps_y[prev_wp]),(maps_x[wp2]-maps_x[prev_wp]));
+  // the x,y,s along the segment
+  double seg_s = (s-maps_s[prev_wp]);
+
+  double seg_x = maps_x[prev_wp]+seg_s*cos(heading);
+  double seg_y = maps_y[prev_wp]+seg_s*sin(heading);
+
+  double perp_heading = heading-pi()/2;
+
+  double x = seg_x + d*cos(perp_heading);
+  double y = seg_y + d*sin(perp_heading);
+
+  return {x,y};
+
+}
+
+TrajectoryGenerator TrajectoryGenerator::updateTrajectory(Vehicle& car, int& ref_vel, Behavior& behavior, MapPoints& mapPoints) {
   
   int lane;
   
-  if (car.lane == LANE::CENTER && behavior.laneType == BehaviorLaneType::KEEP_LANE) {
+  if (car.lane == Lane::CENTER && behavior.laneType == BehaviorLaneType::KEEP_LANE) {
     lane = 1;
-  } else if (car.lane == LANE::CENTER && behavior.laneType == BehaviorLaneType::LANE_CHANGE_LEFT) {
+  } else if (car.lane == Lane::CENTER && behavior.laneType == BehaviorLaneType::LANE_CHANGE_LEFT) {
     lane = 0;
-  } else if (car.lane == LANE::CENTER && behavior.laneType == BehaviorLaneType::LANE_CHANGE_RIGHT) {
+  } else if (car.lane == Lane::CENTER && behavior.laneType == BehaviorLaneType::LANE_CHANGE_RIGHT) {
     lane = 2;
-  } else if (car.lane == LANE::LEFT && behavior.laneType == BehaviorLaneType::KEEP_LANE) {
+  } else if (car.lane == Lane::LEFT && behavior.laneType == BehaviorLaneType::KEEP_LANE) {
     lane = 0;
-  } else if (car.lane == LANE::LEFT && behavior.laneType == BehaviorLaneType::LANE_CHANGE_RIGHT) {
+  } else if (car.lane == Lane::LEFT && behavior.laneType == BehaviorLaneType::LANE_CHANGE_RIGHT) {
     lane = 1;
-  } else if (car.lane == LANE::RIGHT && behavior.laneType == BehaviorLaneType::KEEP_LANE) {
+  } else if (car.lane == Lane::RIGHT && behavior.laneType == BehaviorLaneType::KEEP_LANE) {
     lane = 2;
-  } else if (car.lane == LANE::RIGHT && behavior.laneType == BehaviorLaneType::LANE_CHANGE_LEFT) {
+  } else if (car.lane == Lane::RIGHT && behavior.laneType == BehaviorLaneType::LANE_CHANGE_LEFT) {
     lane = 1;
   } 
   
-  if (behavior.accType == BehaviorAccType::DOWN) {
-    ref_vel -= 0.224;
-  } else if (behavior.accType == BehaviorAccType::UP) {
-    ref_vel += 0.224;
-  }
-  // cout << "ref_vel: " << ref_vel << " ";
+  cout << "ref_vel: " << ref_vel << " ";
 
   // Create a list of widely spaced (x,y) waypoints, evenly spaced at 30m
   // Later we will iterplate these waypoints with a spline and fill it in with more points that control spedd.
@@ -45,6 +68,8 @@ TrajectoryGenerator updateTrajectory(Vehicle& car, Behavior& behavior) {
   double ref_x = car.x;
   double ref_y = car.y;
   double ref_yaw = deg2rad(car.yaw);
+
+  int prev_size = mapPoints.previous_path_x.size();
 
   // if previous size is almost empty, use the car as starting reference
   if (prev_size < 2) {
@@ -61,11 +86,11 @@ TrajectoryGenerator updateTrajectory(Vehicle& car, Behavior& behavior) {
   // use the previous path's end point as starting reference
   else {
     // redefine reference state as previous path end point
-    ref_x = previous_path_x[prev_size - 1];
-    ref_y = previous_path_y[prev_size - 1];
+    ref_x = mapPoints.previous_path_x[prev_size - 1];
+    ref_y = mapPoints.previous_path_y[prev_size - 1];
 
-    double ref_x_prev = previous_path_x[prev_size-2];
-    double ref_y_prev = previous_path_y[prev_size-2];
+    double ref_x_prev = mapPoints.previous_path_x[prev_size-2];
+    double ref_y_prev = mapPoints.previous_path_y[prev_size-2];
     ref_yaw = atan2(ref_y - ref_y_prev, ref_x - ref_x_prev);
 
     // use two points that make path tangent to the previous path's end point
@@ -77,9 +102,9 @@ TrajectoryGenerator updateTrajectory(Vehicle& car, Behavior& behavior) {
   }
 
   // In Frenet add evenly 30m spaced points ahead of the starting reference
-  vector<double> next_wp0 = getXY(car.s + 30, (2+4*lane), map_waypoints_s, map_waypoints_x, map_waypoints_y);
-  vector<double> next_wp1 = getXY(car.s + 60, (2+4*lane), map_waypoints_s, map_waypoints_x, map_waypoints_y);
-  vector<double> next_wp2 = getXY(car.s + 90, (2+4*lane), map_waypoints_s, map_waypoints_x, map_waypoints_y);
+  vector<double> next_wp0 = getXY(car.s + 30, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
+  vector<double> next_wp1 = getXY(car.s + 60, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
+  vector<double> next_wp2 = getXY(car.s + 90, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
 
   ptsx.push_back(next_wp0[0]);
   ptsx.push_back(next_wp1[0]);
@@ -105,9 +130,9 @@ TrajectoryGenerator updateTrajectory(Vehicle& car, Behavior& behavior) {
   s.set_points(ptsx, ptsy);
 
   // start with all of the previous path points from last time
-  for (int i = 0; i < previous_path_x.size(); i++) {
-    this->next_x_vals.push_back(previous_path_x[i]);
-    this->next_y_vals.push_back(previous_path_y[i]);
+  for (int i = 0; i < mapPoints.previous_path_x.size(); i++) {
+    this->next_x_vals.push_back(mapPoints.previous_path_x[i]);
+    this->next_y_vals.push_back(mapPoints.previous_path_y[i]);
   }
 
   // calculate how to break up spline points so that we travel at our desired reference velocity
@@ -119,7 +144,7 @@ TrajectoryGenerator updateTrajectory(Vehicle& car, Behavior& behavior) {
 
   // fill up the rest of paths planner after filling it with previous points, here we will always output 50 points
 
-  for (int i = 1; i <= 50 - previous_path_x.size(); i++) {
+  for (int i = 1; i <= 50 - mapPoints.previous_path_x.size(); i++) {
 
     double N = (target_dist/(DELTA_TIME * ref_vel / 2.24)); // divide by 2.24 to get mps (meters per second) from mph (miles per hour)
     double x_point = x_add_on + (target_x) / N;

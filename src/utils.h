@@ -7,7 +7,7 @@ const double DELTA_TIME = 0.02;
 
 // reference velocity to targer
 // mph - miles per hour
-extern double ref_vel = 0.0; 
+extern double ref_vel; 
 
 enum class Lane {
   LEFT, CENTER, RIGHT, NONE, UNKOWN
@@ -25,5 +25,12 @@ enum class Direction {
 	FRONT, BACK
 };
 
+struct MapPoints {
+  std::vector<double> previous_path_x;
+  std::vector<double> previous_path_y; 
+  std::vector<double> map_waypoints_x; 
+  std::vector<double> map_waypoints_y; 
+  std::vector<double> map_waypoints_s;
+};
 
 #endif /* UTILS_H_ */

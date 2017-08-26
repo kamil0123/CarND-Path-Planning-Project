@@ -4,10 +4,14 @@
 #include <vector>
 #include <iostream>
 
+#include "spline.h"
+
 #include "utils.h"
 #include "behavior.h"
 #include "vehicle.h"
 #include "state.h"
+
+using namespace std;
 
 class TrajectoryGenerator {
 
@@ -19,7 +23,7 @@ class TrajectoryGenerator {
     
     TrajectoryGenerator();
 
-    TrajectoryGenerator updateTrajectory(Vehicle& car, Behavior& behavior);
+    TrajectoryGenerator updateTrajectory(Vehicle& car, int& ref_vel, Behavior& behavior, MapPoints& mapPoints);
 };
 
 #endif /* BEHAVIORPLANNER */
