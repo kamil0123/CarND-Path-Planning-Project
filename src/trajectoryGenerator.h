@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <math.h>
 
 #include "spline.h"
 
@@ -23,7 +24,11 @@ class TrajectoryGenerator {
     
     TrajectoryGenerator();
 
-    TrajectoryGenerator updateTrajectory(Vehicle& car, int& ref_vel, Behavior& behavior, MapPoints& mapPoints);
+    double deg2rad(double x);
+    double rad2deg(double x);
+    vector<double> getXY(double s, double d, vector<double> maps_s, vector<double> maps_x, vector<double> maps_y);
+
+    void updateTrajectory(Vehicle& car, double& ref_vel, Behavior& behavior, MapPoints& mapPoints);
 };
 
 #endif /* BEHAVIORPLANNER */

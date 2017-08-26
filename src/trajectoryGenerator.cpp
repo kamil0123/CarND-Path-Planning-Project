@@ -3,13 +3,11 @@
 TrajectoryGenerator::TrajectoryGenerator(){}
 
 // For converting back and forth between radians and degrees.
-constexpr double pi() { return M_PI; }
-double deg2rad(double x) { return x * pi() / 180; }
-double rad2deg(double x) { return x * 180 / pi(); }
+double TrajectoryGenerator::deg2rad(double x) { return x * M_PI / 180; }
+double TrajectoryGenerator::rad2deg(double x) { return x * 180 / M_PI; }
 
 // Transform from Frenet s,d coordinates to Cartesian x,y
-vector<double> getXY(double s, double d, vector<double> maps_s, vector<double> maps_x, vector<double> maps_y)
-{
+vector<double> TrajectoryGenerator::getXY(double s, double d, vector<double> maps_s, vector<double> maps_x, vector<double> maps_y) {
   int prev_wp = -1;
 
   while(s > maps_s[prev_wp+1] && (prev_wp < (int)(maps_s.size()-1) ))
@@ -26,7 +24,7 @@ vector<double> getXY(double s, double d, vector<double> maps_s, vector<double> m
   double seg_x = maps_x[prev_wp]+seg_s*cos(heading);
   double seg_y = maps_y[prev_wp]+seg_s*sin(heading);
 
-  double perp_heading = heading-pi()/2;
+  double perp_heading = heading-M_PI/2;
 
   double x = seg_x + d*cos(perp_heading);
   double y = seg_y + d*sin(perp_heading);
@@ -35,7 +33,7 @@ vector<double> getXY(double s, double d, vector<double> maps_s, vector<double> m
 
 }
 
-TrajectoryGenerator TrajectoryGenerator::updateTrajectory(Vehicle& car, int& ref_vel, Behavior& behavior, MapPoints& mapPoints) {
+void TrajectoryGenerator::updateTrajectory(Vehicle& car, double& ref_vel, Behavior& behavior, MapPoints& mapPoints) {
   
   int lane;
   
@@ -53,9 +51,7 @@ TrajectoryGenerator TrajectoryGenerator::updateTrajectory(Vehicle& car, int& ref
     lane = 2;
   } else if (car.lane == Lane::RIGHT && behavior.laneType == BehaviorLaneType::LANE_CHANGE_LEFT) {
     lane = 1;
-  } 
-  
-  cout << "ref_vel: " << ref_vel << " ";
+  }
 
   // Create a list of widely spaced (x,y) waypoints, evenly spaced at 30m
   // Later we will iterplate these waypoints with a spline and fill it in with more points that control spedd.
@@ -67,7 +63,7 @@ TrajectoryGenerator TrajectoryGenerator::updateTrajectory(Vehicle& car, int& ref
   // either we will reference the starting point as where the car is or at the presious paths end point
   double ref_x = car.x;
   double ref_y = car.y;
-  double ref_yaw = deg2rad(car.yaw);
+  double ref_yaw = this->deg2rad(car.yaw);
 
   int prev_size = mapPoints.previous_path_x.size();
 
@@ -102,9 +98,9 @@ TrajectoryGenerator TrajectoryGenerator::updateTrajectory(Vehicle& car, int& ref
   }
 
   // In Frenet add evenly 30m spaced points ahead of the starting reference
-  vector<double> next_wp0 = getXY(car.s + 30, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
-  vector<double> next_wp1 = getXY(car.s + 60, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
-  vector<double> next_wp2 = getXY(car.s + 90, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
+  vector<double> next_wp0 = this->getXY(car.s + 30, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
+  vector<double> next_wp1 = this->getXY(car.s + 60, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
+  vector<double> next_wp2 = this->getXY(car.s + 90, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
 
   ptsx.push_back(next_wp0[0]);
   ptsx.push_back(next_wp1[0]);

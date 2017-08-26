@@ -171,7 +171,7 @@ int main() {
   	map_waypoints_dy.push_back(d_y);
   }
 
-  int ref_vel = 0.0;
+  double ref_vel = 0.0;
 
   h.onMessage([&ref_vel, &map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy]
     (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -226,8 +226,10 @@ int main() {
             car.updateParameters(car_s, car_d, car_x, car_y ,car_yaw, car_speed);
             car.updateSideLanes();
 
+            std::cout << "myCar" << std::endl;
+
             vector<Vehicle> vehicles;
-      
+
             for (int i =0; i < sensor_fusion.size(); i++) {
 
               int id    = sensor_fusion[i][0];
@@ -258,6 +260,8 @@ int main() {
             } else if (behavior.accType == BehaviorAccType::UP) {
               ref_vel += 0.224;
             }
+
+            std::cout << "ref_vel: " << ref_vel << std::endl;
 
             TrajectoryGenerator trajectoryGenerator;
             trajectoryGenerator.updateTrajectory(car, ref_vel, behavior, mapPoints);
