@@ -4,6 +4,8 @@
 #include <vector>
 
 const double DELTA_TIME = 0.02;
+const double MAX_REF_VEL = 47.0;
+const double FRONT_TOO_CLOSE = 30.0;
 
 // reference velocity to targer
 // mph - miles per hour

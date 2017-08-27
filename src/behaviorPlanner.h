@@ -7,6 +7,7 @@
 #include "behavior.h"
 #include "vehicle.h"
 #include "state.h"
+#include "utils.h"
 
 class BehaviorPlanner {
 
