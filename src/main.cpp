@@ -236,7 +236,7 @@ int main() {
               double s  = sensor_fusion[i][5];
               double d  = sensor_fusion[i][6];
               
-              double speed = sqrt(vx*vx + vy*vy);
+              double speed = sqrt(vx*vx + vy*vy) / 0.44704; // change m/s to MPH
 
               // calculate where checked car will be in the future
               s += ((double) prev_size * DELTA_TIME * speed);
