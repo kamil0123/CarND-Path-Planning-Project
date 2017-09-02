@@ -22,14 +22,46 @@ Behavior BehaviorPlanner::updateState(Vehicle& car, std::vector<Vehicle>& otherV
   if (currentLaneState.front_distance < FRONT_TOO_CLOSE) {
     too_close = true;
     too_close_speed = currentLaneState.front_v;
-    
+
+    const double costKeepLane    = 0.0;
+    const double costChangeLeft  = 0.0;
+    const double costChangeRight = 0.0;
+
     if (car.lane == Lane::CENTER) {
-      behavior.laneType = BehaviorLaneType::LANE_CHANGE_LEFT;
+      costKeepLane    = 200 - 2 * this->getFrontCost(currentLaneState);
+      costChangeLeft  = 200 - (this->getFrontCost(leftLaneState)  + this->getBackCost(leftLaneState));
+      costChangeRight = 200 - (this->getFrontCost(rightLaneState) + this->getBackCost(rightLaneState));
+
+      costKeepLane    = this->logisticFunction(costKeepLane);
+      costChangeLeft  = this->logisticFunction(costChangeLeft);
+      costChangeRight = this->logisticFunction(costChangeRight);
+
     } else if (car.lane == Lane::LEFT) {
-      behavior.laneType = BehaviorLaneType::LANE_CHANGE_RIGHT;
-    } else {
-      behavior.laneType = BehaviorLaneType::KEEP_LANE;
+      costKeepLane    = 200 - 2 * this->getFrontCost(currentLaneState);
+      costChangeRight = 200 - (this->getFrontCost(rightLaneState) + this->getBackCost(rightLaneState));
+
+      costKeepLane    = this->logisticFunction(costKeepLane);
+      costChangeLeft = 1.0;
+      costChangeRight = this->logisticFunction(costChangeRight);
+
+    } else if (car.lane == Lane::RIGHT) {
+      costKeepLane    = 200 - 2 * this->getFrontCost(currentLaneState);
+      costChangeLeft  = 200 - (this->getFrontCost(leftLaneState)  + this->getBackCost(leftLaneState));
+
+      costKeepLane    = this->logisticFunction(costKeepLane);
+      costChangeLeft  = this->logisticFunction(costChangeLeft);
+      costChangeRight = 1.0;
+
     }
+
+    if (costKeepLane <= costChangeLeft && costKeepLane <= costChangeRight) {
+      behavior.laneType = BehaviorLaneType::KEEP_LANE;
+    } else if (costChangeLeft <= costKeepLane && costChangeLeft <= costChangeRight) {
+      behavior.laneType = BehaviorLaneType::LANE_CHANGE_LEFT;
+    } else if (costChangeRight <= costKeepLane && costChangeRight <= costChangeLeft) {
+      behavior.laneType = BehaviorLaneType::LANE_CHANGE_RIGHT;
+    }
+
   } else {
     behavior.laneType = BehaviorLaneType::KEEP_LANE;
   }
