@@ -15,6 +15,8 @@ class BehaviorPlanner {
     BehaviorPlanner();
     
 	Behavior updateState(Vehicle& car, std::vector<Vehicle>& otherVehicles);
+  double getFrontCost(Vehicle& car, State& state);
+  double getBackCost(Vehicle& car, State& state);
 };
 
 #endif /* BEHAVIORPLANNER */

@@ -23,30 +23,30 @@ Behavior BehaviorPlanner::updateState(Vehicle& car, std::vector<Vehicle>& otherV
     too_close = true;
     too_close_speed = currentLaneState.front_v;
 
-    const double costKeepLane    = 0.0;
-    const double costChangeLeft  = 0.0;
-    const double costChangeRight = 0.0;
+    double costKeepLane    = 0.0;
+    double costChangeLeft  = 0.0;
+    double costChangeRight = 0.0;
 
     if (car.lane == Lane::CENTER) {
-      costKeepLane    = 200 - 2 * this->getFrontCost(currentLaneState);
-      costChangeLeft  = 200 - (this->getFrontCost(leftLaneState)  + this->getBackCost(leftLaneState));
-      costChangeRight = 200 - (this->getFrontCost(rightLaneState) + this->getBackCost(rightLaneState));
+      costKeepLane    = 200 - 1.5 * this->getFrontCost(car, currentLaneState);
+      costChangeLeft  = 200 - (this->getFrontCost(car, leftLaneState)  + this->getBackCost(car, leftLaneState));
+      costChangeRight = 200 - (this->getFrontCost(car, rightLaneState) + this->getBackCost(car, rightLaneState));
 
       costKeepLane    = this->logisticFunction(costKeepLane);
       costChangeLeft  = this->logisticFunction(costChangeLeft);
       costChangeRight = this->logisticFunction(costChangeRight);
 
     } else if (car.lane == Lane::LEFT) {
-      costKeepLane    = 200 - 2 * this->getFrontCost(currentLaneState);
-      costChangeRight = 200 - (this->getFrontCost(rightLaneState) + this->getBackCost(rightLaneState));
+      costKeepLane    = 200 - 2 * this->getFrontCost(car, currentLaneState);
+      costChangeRight = 200 - (this->getFrontCost(car, rightLaneState) + this->getBackCost(car, rightLaneState));
 
       costKeepLane    = this->logisticFunction(costKeepLane);
-      costChangeLeft = 1.0;
+      costChangeLeft  = 1.0;
       costChangeRight = this->logisticFunction(costChangeRight);
 
     } else if (car.lane == Lane::RIGHT) {
-      costKeepLane    = 200 - 2 * this->getFrontCost(currentLaneState);
-      costChangeLeft  = 200 - (this->getFrontCost(leftLaneState)  + this->getBackCost(leftLaneState));
+      costKeepLane    = 200 - 2 * this->getFrontCost(car, currentLaneState);
+      costChangeLeft  = 200 - (this->getFrontCost(car, leftLaneState)  + this->getBackCost(car, leftLaneState));
 
       costKeepLane    = this->logisticFunction(costKeepLane);
       costChangeLeft  = this->logisticFunction(costChangeLeft);
@@ -76,3 +76,30 @@ Behavior BehaviorPlanner::updateState(Vehicle& car, std::vector<Vehicle>& otherV
   
   return behavior;
 }
+
+double BehaviorPlanner::getFrontCost(Vehicle& car, State& state) {
+
+  double cost = -200.0;
+
+  if (state.front_distance > 30) {
+    cost = 3 * state.front_distance - state.front_v;
+  } else if (state.front_distance > 15 && (car.v + 5) < state.front_v) {
+    cost = 3 * state.front_distance - 2 * state.front_v;
+  }
+
+  return cost;
+}
+
+double BehaviorPlanner::getBackCost(Vehicle& car, State& state) {
+
+  double cost = -200.0;
+
+  if (state.back_distance > 30) {
+    cost = 2 * state.front_distance - state.front_v;
+  } else if (state.back_distance > 10 && car.v > (state.back_v + 3)) {
+    cost = 2 * state.front_distance - 2 * state.front_v;
+  }
+
+  return cost;
+}
+
