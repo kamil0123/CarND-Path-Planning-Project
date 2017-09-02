@@ -23,43 +23,52 @@ Behavior BehaviorPlanner::updateState(Vehicle& car, std::vector<Vehicle>& otherV
     too_close = true;
     too_close_speed = currentLaneState.front_v;
 
-    double costKeepLane    = 0.0;
-    double costChangeLeft  = 0.0;
-    double costChangeRight = 0.0;
+    double costKeepLane    = 1.0;
+    double costChangeLeft  = 1.0;
+    double costChangeRight = 1.0;
 
     if (car.lane == Lane::CENTER) {
-      costKeepLane    = 200 - 1.5 * this->getFrontCost(car, currentLaneState);
+      costKeepLane    = 200 - 1.8 * this->getFrontCost(car, currentLaneState);
       costChangeLeft  = 200 - (this->getFrontCost(car, leftLaneState)  + this->getBackCost(car, leftLaneState));
       costChangeRight = 200 - (this->getFrontCost(car, rightLaneState) + this->getBackCost(car, rightLaneState));
+
+      cout << costChangeLeft << " | " << costKeepLane << " | " << costChangeRight << endl;
 
       costKeepLane    = this->logisticFunction(costKeepLane);
       costChangeLeft  = this->logisticFunction(costChangeLeft);
       costChangeRight = this->logisticFunction(costChangeRight);
 
     } else if (car.lane == Lane::LEFT) {
-      costKeepLane    = 200 - 2 * this->getFrontCost(car, currentLaneState);
+      costKeepLane    = 200 - 1.5 * this->getFrontCost(car, currentLaneState);
       costChangeRight = 200 - (this->getFrontCost(car, rightLaneState) + this->getBackCost(car, rightLaneState));
 
+      cout << costChangeLeft << " | " << costKeepLane << " | " << costChangeRight << endl;
+
       costKeepLane    = this->logisticFunction(costKeepLane);
-      costChangeLeft  = 1.0;
       costChangeRight = this->logisticFunction(costChangeRight);
 
     } else if (car.lane == Lane::RIGHT) {
-      costKeepLane    = 200 - 2 * this->getFrontCost(car, currentLaneState);
+      costKeepLane    = 200 - 1.5 * this->getFrontCost(car, currentLaneState);
       costChangeLeft  = 200 - (this->getFrontCost(car, leftLaneState)  + this->getBackCost(car, leftLaneState));
+
+      cout << costChangeLeft << " | " << costKeepLane << " | " << costChangeRight << endl;
 
       costKeepLane    = this->logisticFunction(costKeepLane);
       costChangeLeft  = this->logisticFunction(costChangeLeft);
-      costChangeRight = 1.0;
 
     }
 
+    cout << costChangeLeft << " | " << costKeepLane << " | " << costChangeRight << endl;
+
     if (costKeepLane <= costChangeLeft && costKeepLane <= costChangeRight) {
       behavior.laneType = BehaviorLaneType::KEEP_LANE;
+      cout << "Behavior: KeepLane"  << endl;;
     } else if (costChangeLeft <= costKeepLane && costChangeLeft <= costChangeRight) {
       behavior.laneType = BehaviorLaneType::LANE_CHANGE_LEFT;
+      cout << "Behavior: ChangeLeft" << endl;;
     } else if (costChangeRight <= costKeepLane && costChangeRight <= costChangeLeft) {
       behavior.laneType = BehaviorLaneType::LANE_CHANGE_RIGHT;
+      cout << "Behavior: ChangeRight" << endl;;
     }
 
   } else {
@@ -81,9 +90,9 @@ double BehaviorPlanner::getFrontCost(Vehicle& car, State& state) {
 
   double cost = -200.0;
 
-  if (state.front_distance > 30) {
+  if (state.front_distance > 40) {
     cost = 3 * state.front_distance - state.front_v;
-  } else if (state.front_distance > 15 && (car.v + 5) < state.front_v) {
+  } else if (state.front_distance > 30 && (car.v + 10) < state.front_v) {
     cost = 3 * state.front_distance - 2 * state.front_v;
   }
 
@@ -94,9 +103,9 @@ double BehaviorPlanner::getBackCost(Vehicle& car, State& state) {
 
   double cost = -200.0;
 
-  if (state.back_distance > 30) {
+  if (state.back_distance > 40) {
     cost = 2 * state.front_distance - state.front_v;
-  } else if (state.back_distance > 10 && car.v > (state.back_v + 3)) {
+  } else if (state.back_distance > 20 && car.v > (state.back_v + 10)) {
     cost = 2 * state.front_distance - 2 * state.front_v;
   }
 

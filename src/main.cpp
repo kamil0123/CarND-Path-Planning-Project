@@ -226,8 +226,6 @@ int main() {
             car.updateParameters(car_s, car_d, car_x, car_y ,car_yaw, car_speed);
             car.updateSideLanes();
 
-            std::cout << "myCar" << std::endl;
-
             vector<Vehicle> vehicles;
 
             for (int i =0; i < sensor_fusion.size(); i++) {
@@ -260,8 +258,6 @@ int main() {
             } else if (behavior.accType == BehaviorAccType::UP) {
               ref_vel += 0.224;
             }
-
-            std::cout << "ref_vel: " << ref_vel << std::endl;
 
             TrajectoryGenerator trajectoryGenerator;
             trajectoryGenerator.updateTrajectory(car, ref_vel, behavior, mapPoints);
