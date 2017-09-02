@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <math.h>
 
 #include "behavior.h"
 #include "vehicle.h"
@@ -17,6 +18,7 @@ class BehaviorPlanner {
 	Behavior updateState(Vehicle& car, std::vector<Vehicle>& otherVehicles);
   double getFrontCost(Vehicle& car, State& state);
   double getBackCost(Vehicle& car, State& state);
+  double logisticFunction(double& cost);
 };
 
 #endif /* BEHAVIORPLANNER */

@@ -103,3 +103,9 @@ double BehaviorPlanner::getBackCost(Vehicle& car, State& state) {
   return cost;
 }
 
+double BehaviorPlanner::logisticFunction(double& cost) {
+  return ( 1 / ( 1 + exp(-0.02 * (cost - 50)) ) );
+
+
+}
+
