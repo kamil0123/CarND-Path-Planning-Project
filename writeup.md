@@ -1,4 +1,4 @@
-## Write up
+## Model documentation
 
 ### The goal of this project
 
@@ -24,18 +24,24 @@ Pipeline steps:
 4. Path planning - decide what to do - keep or change lane, how to change velocity.
 5. Calculate new trajectory.
 
+Trajectory of the car is a list of 50 points in global map coordinate system. 
+If new circle of pipeline is calculated before car passed all poins generated in previous circle, not passed points are addad at the beginning of the new list of points and just remaining points (to finally get 50 points) are calculated.
+
 ### 1. Get sensor data about my car.
+
 The data contains:
 * car's location in global map coordiante sytem (x, y and yaw)
 * car's location in Frenet coordinate sytem (s, d)
-* speed (m/s)
+* speed in MPH (miles per hour)
 * previous path data (x, y) of the car
 * Previous path's end s and d values
 
+####2. Get sensor data about other vehicles
 
+The data contains:
+* car's id - unique identifier of the vehicle
+* car's velocity in global map coordinate system (vx, vy) in m/s (meters per second)
+* car's location in Frenet coordinate sytem (s, d)
 
-
-
-
-
+Total velocity of the car is calculated from vx and vy. Then this value is used to predict where the car will be in the future. If it will be assumed that car is moving along the road, then its future s (Frenet coordinate system) will be equal current s value plus its total velocity multiplied by number of previous, not driven yet points and delta time (time elapsed between going two points).
 

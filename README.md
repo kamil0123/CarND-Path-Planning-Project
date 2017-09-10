@@ -3,9 +3,10 @@ Self-Driving Car Engineer Nanodegree Program
 
 ### My results
 
-[Video](https://www.youtube.com/watch?v=5hBkgsyb8CI&feature=youtu.be) with my results.
-[Write up](writeup.md) of my implementation.
-   
+[Video](https://www.youtube.com/watch?v=5hBkgsyb8CI&feature=youtu.be) showing my results.
+
+Described model for generating paths is in file [writeup.md](writeup.md).
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases).
 
