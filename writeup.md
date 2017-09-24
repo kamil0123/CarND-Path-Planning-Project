@@ -61,7 +61,7 @@ In path planning part we must decide how our car will behave. To do this I creat
  * keep lane
  * lane change right
  * lane change left 
-* acceleration (3 states): 
+* velocity (3 states): 
  * don't change
  * increase
  * reduce
@@ -95,4 +95,18 @@ If car is on left or right lane we can only keep lane or change to center. So co
 
 Parameter k is added in keeping lane equation because of lack of backCost (if we are not changing lane, we are not not interested in what happens behind us). Is smaller than 2 because front cost usually gives a little bigger value than back cost. If our car is on one of side lanes (left or right) is smaller than on center lane because I wanted to increase probability of going back on center lane to have more maneuver options in the future (turn left or right on center lane, or just one of it on side lane).
 
-FrontCost and backCost are equal -200.0 at the beginning, which gives really big final cost. Then, depending of our cars velocity, distance to other cars and other cars velocity it can change and probably increase and gives smaller final cost.
+FrontCost and backCost are equal -200.0 at the beginning, which gives really big final cost. Then, depending of our cars velocity, distance to other cars and other cars velocity it can increase and gives smaller final cost.
+
+#### 3.2 Path planning - velocity
+
+Velocity of our car is:
+* reduced - if car in front of our car is closer than 30 meters and it's velocity is lower than velociy of our car
+* increased - if velocity of our car is smaller than max reference velocity (46.0 MPH) and distance to nearest vehicle in front of our car is bigger than 10 meters
+
+Otherwise it is not changed.
+
+Velocity is changed by adding or subtracting 0.224 MPH (0.1 mps) to reference velocity, which is used in trajectory generator to calcluate new trajecoty points.
+
+Velocity state is calculated in method updateState of class BehaviorPlanner (lines 78-89 of behaviorPlannes.cpp file). New reference velocity is calculated in lines 260-264 of main.cpp file.
+
+ 
