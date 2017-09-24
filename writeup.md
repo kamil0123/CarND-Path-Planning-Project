@@ -17,12 +17,13 @@ Path planner must meet the following criteria:
 
 ### Overview
 
-Pipeline steps:
+We have given a sparse map list of waypoints around the highway.
+
+Pipeline steps to calculate path trajectory:
 1. Get sensor data about my car.
 2. Get sensor data about other vehicles.
-3. Get data about map and previous trajectory of my car.
-4. Path planning - decide what to do - keep or change lane, how to change velocity.
-5. Calculate new trajectory.
+3. Path planning - decide what to do - keep or change lane and how to change velocity.
+4. Generate new trajectory.
 
 Trajectory of the car is a list of 50 points in global map coordinate system. 
 If new circle of pipeline is calculated before car passed all poins generated in previous circle, not passed points are addad at the beginning of the new list of points and just remaining points (to finally get 50 points) are calculated.
@@ -33,15 +34,65 @@ The data contains:
 * car's location in global map coordiante sytem (x, y and yaw)
 * car's location in Frenet coordinate sytem (s, d)
 * speed in MPH (miles per hour)
-* previous path data (x, y) of the car
-* Previous path's end s and d values
+* previous path data points (x, y), which were not used (the car haven't passed them yet)
+* previous path's end s and d values
 
-####2. Get sensor data about other vehicles
+If list of previous data points is not empty, then we will add this points to new trajectory. Now, calculation of new trajectory will start not at current position of the car (s, d), but at end s and d of previous path. To take that into account we change given position s to end s from previous path (line 216 of main.cpp).
+
+Object Vehcicle of our car is created at lines 224-226 of main.cpp file. 
+
+### 2. Get sensor data about other vehicles
 
 The data contains:
 * car's id - unique identifier of the vehicle
 * car's velocity in global map coordinate system (vx, vy) in m/s (meters per second)
 * car's location in Frenet coordinate sytem (s, d)
 
-Total velocity of the car is calculated from vx and vy. Then this value is used to predict where the car will be in the future. If it will be assumed that car is moving along the road, then its future s (Frenet coordinate system) will be equal current s value plus its total velocity multiplied by number of previous, not driven yet points and delta time (time elapsed between going two points).
+If we have data points from previous path and start calculation of new trajectory at the end of previous path, then we also need to calculate where other vehicles will be at that point.
+Total velocity of the car is calculated from vx and vy (sqrt(vx*vx + vy*vy)).
+Then this value is used to predict where the car will be in the future. If it will be assumed that car is moving along the road, then its future s (Frenet coordinate system) will be equal to current s value plus its total velocity multiplied by number of previous, not driven yet, points and delta time (time elapsed between going two points).
 
+Objects Vehcicle, for every other detected vehicle, are created at lines 245-229 of main.cpp file. 
+
+### 3. Path planning
+
+In path planning part we must decide how our car will behave. To do this I created simple finite state machine with two separte categories, 3 states each:
+* lane (3 states): 
+ * keep lane
+ * lane change right
+ * lane change left 
+* acceleration (3 states): 
+ * don't change
+ * increase
+ * reduce
+
+Calculations of path planning are made in methods of class BehaviorPlanner. Input of its main method (updateState) is data of our and other cars.
+
+#### 3.1 Path planning - change lane
+
+To calculate new state of lane changing I have projected simple cost functions. State with lowest cost is the best one.
+
+The cost of every operation is calculated as logistic function with equation:
+cost = L / (1 + e^(-k*(x-x0)))
+
+I used constat values of paramters:
+* L = 1
+* k = 0.02
+* x0 = 50
+I tried find values, which will give final cost in wide range, not just close to zero and one.
+
+Value of cost depends on x value and is in range of (0, 1). The lower x value, the lower the cost.
+
+For keeping lane x is calculated as:
+x = 200 - k * frontCost
+where k is equal:
+* 1.8, if our car is on center lane
+* 1.5, if our car is on left or right lane
+For changing lane x is equal:
+x = 200 - (frontCost + backCost)
+
+If car is on left or right lane we can only keep lane or change to center. So cost of changing in opposite direction is equal 1.0.
+
+Parameter k is added in keeping lane equation because of lack of backCost (if we are not changing lane, we are not not interested in what happens behind us). Is smaller than 2 because front cost usually gives a little bigger value than back cost. If our car is on one of side lanes (left or right) is smaller than on center lane because I wanted to increase probability of going back on center lane to have more maneuver options in the future (turn left or right on center lane, or just one of it on side lane).
+
+FrontCost and backCost are equal -200.0 at the beginning, which gives really big final cost. Then, depending of our cars velocity, distance to other cars and other cars velocity it can change and probably increase and gives smaller final cost.

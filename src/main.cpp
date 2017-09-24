@@ -180,6 +180,7 @@ int main() {
     // The 2 signifies a websocket event
     //auto sdata = string(data).substr(0, length);
     //cout << sdata << endl;
+
     if (length && length > 2 && data[0] == '4' && data[1] == '2') {
 
       auto s = hasData(data);
@@ -212,8 +213,6 @@ int main() {
 
             int prev_size = previous_path_x.size();
 
-            // TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
-			
 			      if (prev_size > 0) {
               car_s = end_path_s;
             }
@@ -250,6 +249,9 @@ int main() {
               vehicles.push_back(vehicle);
             }
 
+            // DONE: define a path made up of (x,y) points that the car will visit 
+            // sequentially every .02 seconds
+  
             MapPoints mapPoints = {previous_path_x, previous_path_y, map_waypoints_x, map_waypoints_y, map_waypoints_s};
 
             BehaviorPlanner behaviorPlanner;
