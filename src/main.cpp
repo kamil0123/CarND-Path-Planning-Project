@@ -258,9 +258,9 @@ int main() {
             Behavior behavior = behaviorPlanner.updateState(car, vehicles);
 
             if (behavior.accType == BehaviorAccType::DOWN) {
-              ref_vel -= 0.224;
+              ref_vel -= 0.2;
             } else if (behavior.accType == BehaviorAccType::UP) {
-              ref_vel += 0.224;
+              ref_vel += 0.2;
             }
 
             TrajectoryGenerator trajectoryGenerator;

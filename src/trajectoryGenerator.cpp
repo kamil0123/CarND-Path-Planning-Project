@@ -97,7 +97,7 @@ void TrajectoryGenerator::updateTrajectory(Vehicle& car, double& ref_vel, Behavi
     ptsy.push_back(ref_y);
   }
 
-  // In Frenet add evenly 30m spaced points ahead of the starting reference
+  // In Frenet add evenly 30miles spaced points ahead of the starting reference
   vector<double> next_wp0 = this->getXY(car.s + 30, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
   vector<double> next_wp1 = this->getXY(car.s + 60, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
   vector<double> next_wp2 = this->getXY(car.s + 90, (2+4*lane), mapPoints.map_waypoints_s, mapPoints.map_waypoints_x, mapPoints.map_waypoints_y);
@@ -132,7 +132,7 @@ void TrajectoryGenerator::updateTrajectory(Vehicle& car, double& ref_vel, Behavi
   }
 
   // calculate how to break up spline points so that we travel at our desired reference velocity
-  double target_x = 30;
+  double target_x = 35;
   double target_y = s(target_x);
   double target_dist = sqrt((target_x) * (target_x) + (target_y) * (target_y));
 
