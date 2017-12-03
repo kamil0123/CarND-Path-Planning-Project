@@ -105,7 +105,7 @@ Velocity of our car is:
 
 otherwise it is not changed.
 
-Velocity is changed by adding or subtracting 0.224 MPH (0.1 mps) to reference velocity, which is used in trajectory generator to calculate new trajectory points.
+Velocity is changed by adding or subtracting 0.2 MPH to reference velocity, which is used in trajectory generator to calculate new trajectory points.
 
 Velocity state is calculated in method updateState of class BehaviorPlanner (lines 78-89 of behaviorPlannes.cpp file). New reference velocity is calculated in lines 260-264 of main.cpp file.
 
@@ -130,8 +130,8 @@ To determine first two reference points we will use information about current ca
 
 Now we calculate in Frenet coordinate system, where we want to be in next 30, 60 and 90 miles (lines 101-103), and then we shift car reference angle to 0 degrees (lines 113-119).
 
-Next, by using spline we calculate where we will be, after moving 30 miles upward on map, and what distance we will travel (lines 135-137). With that informations we can calculate missing points of our 50 points of new trajectory (lines 143-162).
+Next, by using spline we calculate where we will be, after moving 35 miles upward on map, and what distance we will travel (lines 135-137). With that informations we can calculate missing points of our 50 points of new trajectory (lines 143-162).
 
 ### Conclusions
-I believe that my path planner is good and meets the requirements of the project. However, it can make mistakes. I tested it on 3 runs, each takes about 20 minutes. 2 runs goes correct, without any incidents. On one run, the car has one incident during lane change, about 2 minutes after start. It's difficult to determine what has not worked and how to improve it due to unique and changing environmental conditions (number and distance of other cars, their velocities, position and velocity of our car).
+I believe that my path planner is good and meets the requirements of the project. However, it can make mistakes. I tested it on 4 runs, each takes about 10 minutes. 3 runs goes correct, without any incidents. On one run, the car has one incident - collision during lane change. It's difficult to determine what has not worked and how to improve it due to unique and changing environmental conditions (number and distance of other cars, their velocities, position and velocity of our car).
 
